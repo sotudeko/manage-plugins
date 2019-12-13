@@ -23,23 +23,23 @@ pipeline {
             }
         }
 
-        // stage('Nexus IQ Scan'){
-        //     steps {
-        //         script{
+        stage('Nexus IQ Scan'){
+            steps {
+                script{
                 
-        //             try {
-        //                 def policyEvaluation = nexusPolicyEvaluation failBuildOnNetworkError: true, iqApplication: selectedApplication('hpi-plugin'), iqScanPatterns: [[scanPattern: '**/*.war']], iqStage: 'build', jobCredentialsId: 'admin'
-        //                 echo "Nexus IQ scan succeeded: ${policyEvaluation.applicationCompositionReportUrl}"
-        //                 IQ_SCAN_URL = "${policyEvaluation.applicationCompositionReportUrl}"
-        //             } 
-        //             catch (error) {
-        //                 def policyEvaluation = error.policyEvaluation
-        //                 echo "Nexus IQ scan vulnerabilities detected', ${policyEvaluation.applicationCompositionReportUrl}"
-        //                 throw error
-        //             }
-        //         }
-        //     }
-        // }
+                    try {
+                        def policyEvaluation = nexusPolicyEvaluation failBuildOnNetworkError: true, iqApplication: ${PLUGIN_NAME}, iqScanPatterns: [[scanPattern: '**/*.hpi']], iqStage: 'build', jobCredentialsId: 'admin'
+                        echo "Nexus IQ scan succeeded: ${policyEvaluation.applicationCompositionReportUrl}"
+                        IQ_SCAN_URL = "${policyEvaluation.applicationCompositionReportUrl}"
+                    } 
+                    catch (error) {
+                        def policyEvaluation = error.policyEvaluation
+                        echo "Nexus IQ scan vulnerabilities detected', ${policyEvaluation.applicationCompositionReportUrl}"
+                        throw error
+                    }
+                }
+            }
+        }
 
         // stage('Create tag'){
         //     steps {
