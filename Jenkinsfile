@@ -60,8 +60,8 @@ pipeline {
 
                     createTag nexusInstanceId: 'nxrm3', tagAttributesPath: "${TAG_FILE}", tagName: "${BUILD_TAG}"
 
-                    write the tag name to the build page (Rich Text Publisher plugin)
-                    rtp abortedAsStable: false, failedAsStable: false, parserName: 'HTML', stableText: "Nexus Repository Tag: ${BUILD_TAG}", unstableAsStable: false 
+                    // write the tag name to the build page (Rich Text Publisher plugin)
+                    rtp abortedAsStable: false, failedAsStable: false, parserName: 'HTML', stableText: "Nexus Repository Tag (Stable): ${BUILD_TAG}",  unstableText: "Nexus Repository Tag (Unstable): ${BUILD_TAG}",unstableAsStable: false 
                 }
             }
         }
