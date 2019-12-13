@@ -40,31 +40,31 @@ pipeline {
             }
         }
 
-        // stage('Create tag'){
-        //     steps {
-        //         script {
+        stage('Create tag'){
+            steps {
+                script {
                         
                     // construct the meta data (Pipeline Utility Steps plugin)
-                    // def tagdata = readJSON text: '{}' 
-                    // tagdata.buildUser = "${USER}" as String
-                    // tagdata.buildNumber = "${BUILD_NUMBER}" as String
-                    // tagdata.buildId = "${BUILD_ID}" as String
-                    // tagdata.buildJob = "${JOB_NAME}" as String
-                    // tagdata.buildTag = "${BUILD_TAG}" as String
-                    // tagdata.appVersion = "${BUILD_VERSION}" as String
-                    // tagdata.buildUrl = "${BUILD_URL}" as String
-                    // tagdata.iqScanUrl = "${IQ_SCAN_URL}" as String
+                    def tagdata = readJSON text: '{}' 
+                    tagdata.buildUser = "${USER}" as String
+                    tagdata.buildNumber = "${BUILD_NUMBER}" as String
+                    tagdata.buildId = "${BUILD_ID}" as String
+                    tagdata.buildJob = "${JOB_NAME}" as String
+                    tagdata.buildTag = "${BUILD_TAG}" as String
+                    tagdata.appVersion = "${BUILD_VERSION}" as String
+                    tagdata.buildUrl = "${BUILD_URL}" as String
+                    tagdata.iqScanUrl = "${IQ_SCAN_URL}" as String
 
-                    // writeJSON(file: "${TAG_FILE}", json: tagdata, pretty: 4)
-                    // sh 'cat ${TAG_FILE}'
+                    writeJSON(file: "${TAG_FILE}", json: tagdata, pretty: 4)
+                    sh 'cat ${TAG_FILE}'
 
-                    // createTag nexusInstanceId: 'nxrm3', tagAttributesPath: "${TAG_FILE}", tagName: "${BUILD_TAG}"
+                    createTag nexusInstanceId: 'nxrm3', tagAttributesPath: "${TAG_FILE}", tagName: "${BUILD_TAG}"
 
-                    // write the tag name to the build page (Rich Text Publisher plugin)
-                    // rtp abortedAsStable: false, failedAsStable: false, parserName: 'Confluence', stableText: "Nexus Repository Tag: ${BUILD_TAG}", unstableAsStable: false 
-        //         }
-        //     }
-        // }
+                    write the tag name to the build page (Rich Text Publisher plugin)
+                    rtp abortedAsStable: false, failedAsStable: false, parserName: 'HTML', stableText: "Nexus Repository Tag (Stable): ${BUILD_TAG}", unstableText: "Nexus Repository Tag (Unstable): ${BUILD_TAG}", unstableAsStable: false 
+                }
+            }
+        }
 
         // stage('Upload to Nexus Repository'){
         //     steps {
