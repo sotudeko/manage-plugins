@@ -29,13 +29,12 @@ pipeline {
                 
                     try {
                         def policyEvaluation = nexusPolicyEvaluation failBuildOnNetworkError: true, iqApplication: "${PLUGIN_NAME}", iqScanPatterns: [[scanPattern: '**/*.hpi']], iqStage: 'release', jobCredentialsId: 'admin'
-                        echo "Nexus IQ scan succeeded: ${policyEvaluation.applicationCompositionReportUrl}"
+                        echo "Nexus IQ scan succeeded"
                         IQ_SCAN_URL = "${policyEvaluation.applicationCompositionReportUrl}"
                     } 
                     catch (error) {
                         def policyEvaluation = error.policyEvaluation
-                        echo "Nexus IQ scan vulnerabilities detected', ${policyEvaluation.applicationCompositionReportUrl}"
-                        //throw error
+                        echo "Nexus IQ scan vulnerabilities detected"
                     }
                 }
             }
