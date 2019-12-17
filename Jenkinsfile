@@ -76,11 +76,10 @@ pipeline {
                     withCredentials([usernameColonPassword(credentialsId: 'admin', variable: 'REPO_LOGIN')]) {
                         sh '''
                         set +x
-                        curl -H 'Token: ${REPO_LOGIN}'' --upload-file ${PLUGIN_PATH} ${PLUGIN_REPO}/${PLUGIN_NAME}/${PLUGIN_FILE}
+                        curl -H 'Token: ${REPO_LOGIN}' --upload-file ${PLUGIN_PATH} ${PLUGIN_REPO}/${PLUGIN_NAME}/${PLUGIN_FILE}
                         '''
                     }
                 }
-                
             }
         }
     }
