@@ -73,10 +73,10 @@ pipeline {
         stage('Upload to Nexus Repository'){
             steps {
                 script {
-                    withCredentials([usernameColonPassword(credentialsId: 'admin', variable: 'REPO_LOGIN')]) {
+                    withCredentials([usernamePassword(credentialsId: 'admin', passwordVariable: 'USERPWD', usernameVariable: 'USERNAME')]) {
                         sh '''
                         set +x
-                        curl -H 'Token: ${REPO_LOGIN}' --upload-file ${PLUGIN_PATH} ${PLUGIN_REPO}/${PLUGIN_NAME}/${PLUGIN_FILE}
+                        curl -u ${USERNAME}:${USERPWD} --upload-file ${PLUGIN_PATH} ${PLUGIN_REPO}/${PLUGIN_NAME}/${PLUGIN_FILE}
                         '''
                     }
                 }
