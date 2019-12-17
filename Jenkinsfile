@@ -76,7 +76,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'admin', passwordVariable: 'USERPWD', usernameVariable: 'USERNAME')]) {
                         sh '''
                         set +x
-                        curl -u ${USERNAME}:${USERPWD} --upload-file ${PLUGIN_PATH} ${PLUGIN_REPO}/${PLUGIN_NAME}/${PLUGIN_NAME}/${PLUGIN_FILE}
+                        curl -u ${USERNAME}:${USERPWD} --upload-file ${PLUGIN_PATH} ${PLUGIN_REPO}/${PLUGIN_NAME}/${PLUGIN_VERSION}/${PLUGIN_FILE}
                         '''
                     }
                 }
