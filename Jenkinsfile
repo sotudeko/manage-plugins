@@ -5,14 +5,19 @@ pipeline {
     environment {
         TAG_FILE = "${WORKSPACE}/tag.json"
         IQ_SCAN_URL = ""
-        PLUGIN_PATH = "${WORKSPACE}/${PLUGIN_NAME}.hpi"
+        PLUGIN_FILE = "${PLUGIN_NAME}.hpi"
+        PLUGIN_PATH = "${WORKSPACE}/${PLUGIN_FILE}"
         PLUGIN_INDEX = "https://updates.jenkins-ci.org/download/plugins"
-        PLUGIN_REPO = 'jenkins-plugins'
+        PLUGIN_REPO = 'http://localhost:8081/repository/jenkins-plugins'
     }
 
     stages {
         stage('Download plugin file') {
             steps {
+                sh "echo PLUGIN_NAME=${PLUGIN_NAME}"
+                sh "echo PLUGIN_VERSION=${PLUGIN_VERSION}"
+                sh "echo PLUGIN_FILE=${PLUGIN_FILE}"
+                sh "echo PLUGIN_PATH=${PLUGIN_PATH}"
                 sh "wget ${PLUGIN_INDEX}/${PLUGIN_NAME}/${PLUGIN_VERSION}/${PLUGIN_NAME}.hpi"
             }
             post {
@@ -65,13 +70,11 @@ pipeline {
             }
         }
 
-        // stage('Upload to Nexus Repository'){
-        //     steps {
-        //         script {
-        //             nexusPublisher nexusInstanceId: 'nxrm3', nexusRepositoryId: "${DEV_REPO}", packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: 'war', filePath: "${ARTEFACT_NAME}"]], mavenCoordinate: [artifactId: 'WebGoat', groupId: 'org.demo', packaging: 'war', version: "${BUILD_VERSION}"]]], tagName: "${BUILD_TAG}"
-        //         }
-        //     }
-        // }
+        stage('Upload to Nexus Repository'){
+            steps {
+                sh "curl -v -u admin:admin123 --upload-file ${PLUGIN_PATH} ${PLUGIN_REPO}/${PLUGIN_NAME}/${PLUGIN_FILE}"
+            }
+        }
     }
 }
 
