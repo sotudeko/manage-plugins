@@ -8,7 +8,7 @@ pipeline {
         PLUGIN_FILE = "${PLUGIN_NAME}.hpi"
         PLUGIN_PATH = "${WORKSPACE}/${PLUGIN_FILE}"
         PLUGIN_INDEX = "https://updates.jenkins-ci.org/download/plugins"
-        PLUGIN_REPO = 'http://localhost:8081/repository/jenkins-plugins-2'
+        PLUGIN_REPO = 'http://localhost:8081/repository/jenkins_plugins'
     }
 
     stages {
@@ -18,7 +18,7 @@ pipeline {
                 sh "echo PLUGIN_VERSION=${PLUGIN_VERSION}"
                 sh "echo PLUGIN_FILE=${PLUGIN_FILE}"
                 sh "echo PLUGIN_PATH=${PLUGIN_PATH}"
-                sh "wget ${PLUGIN_INDEX}/${PLUGIN_NAME}/${PLUGIN_VERSION}/${PLUGIN_NAME}.hpi"
+                sh "wget -q ${PLUGIN_INDEX}/${PLUGIN_NAME}/${PLUGIN_VERSION}/${PLUGIN_NAME}.hpi"
             }
             post {
                 success {
@@ -52,9 +52,7 @@ pipeline {
                     //construct the meta data (Pipeline Utility Steps plugin)
                     def tagdata = readJSON text: '{}' 
                     tagdata.buildUser = "${USER}" as String
-                    tagdata.buildNumber = "${BUILD_NUMBER}" as String
-                    tagdata.buildId = "${BUILD_ID}" as String
-                    tagdata.buildJob = "${JOB_NAME}" as String
+                    tagdata.buildJob = "${JOB_NAME}-${BUILD_NUMBER}" as String
                     tagdata.buildTag = "${BUILD_TAG}" as String
                     tagdata.buildUrl = "${BUILD_URL}" as String
                     tagdata.iqScanUrl = "${IQ_SCAN_URL}" as String
