@@ -12,13 +12,6 @@ pipeline {
     }
 
     stages {
-        stage ('Cleanup workspace') {
-            steps {
-                env.WORKSPACE = pwd()
-                sh "rm ${env.WORKSPACE}/* -fr"
-            }
-        }
-
         stage('Download plugin file') {
             steps {
                 sh "wget -q ${PLUGIN_INDEX}/${PLUGIN_NAME}/${PLUGIN_VERSION}/${PLUGIN_NAME}.hpi"
