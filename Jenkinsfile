@@ -73,19 +73,9 @@ pipeline {
                         }
                     }
                 }
-                }
             }
-        }
-
-        stage('Create tag'){
-            steps {
-                
-            }
-        }
-
-        stage('Upload to Nexus Repository'){
-            
         }
     }
 }
+
 
