@@ -41,8 +41,8 @@ pipeline {
             }
             post {
                 success {
-                    steps {
-                        script {
+                    // steps {
+                    //     script {
                             
                             //construct the meta data (Pipeline Utility Steps plugin)
                             def tagdata = readJSON text: '{}' 
@@ -59,18 +59,18 @@ pipeline {
 
                             // write the tag name to the build page (Rich Text Publisher plugin)
                             rtp abortedAsStable: false, failedAsStable: false, parserName: 'HTML', stableText: "Nexus Repository Tag (Stable): ${BUILD_TAG}",  unstableText: "Nexus Repository Tag (Unstable): ${BUILD_TAG}",unstableAsStable: false 
-                        }
-                    }
+                    //     }
+                    // }
 
-                    steps {
-                        script {
+                    // steps {
+                    //     script {
                             withCredentials([usernamePassword(credentialsId: 'admin', passwordVariable: 'USERPWD', usernameVariable: 'USERNAME')]) {
                                 sh '''
                                 set +x
                                 curl -u ${USERNAME}:${USERPWD} --upload-file ${PLUGIN_PATH} ${PLUGIN_REPO}/${PLUGIN_NAME}/${PLUGIN_VERSION}/${PLUGIN_FILE}
                                 '''
-                            }
-                        }
+                        //     }
+                        // }
                     }
                 }
             }
