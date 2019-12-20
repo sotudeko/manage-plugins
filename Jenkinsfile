@@ -8,7 +8,7 @@ pipeline {
         PLUGIN_FILE = "${PLUGIN_NAME}.hpi"
         PLUGIN_PATH = "${WORKSPACE}/${PLUGIN_FILE}"
         PLUGIN_INDEX = "https://updates.jenkins-ci.org/download/plugins"
-        PLUGIN_REPO = 'http://localhost:8081/repository/jenkins_plugins'
+        PLUGIN_REPO = 'http://localhost:8081/repository/jenkins-plugins'
     }
 
     stages {
@@ -24,7 +24,7 @@ pipeline {
             }
         }
 
-        stage('Nexus IQ Scan'){
+        stage('Nexus IQ Scan and Upload'){
             steps {
                 script{
                 
@@ -39,42 +39,52 @@ pipeline {
                     }
                 }
             }
+            post {
+                success {
+                    steps {
+                        script {
+                            
+                            //construct the meta data (Pipeline Utility Steps plugin)
+                            def tagdata = readJSON text: '{}' 
+                            tagdata.buildUser = "${USER}" as String
+                            tagdata.buildJob = "${JOB_NAME}-${BUILD_NUMBER}" as String
+                            tagdata.buildTag = "${BUILD_TAG}" as String
+                            tagdata.buildUrl = "${BUILD_URL}" as String
+                            tagdata.iqScanUrl = "${IQ_SCAN_URL}" as String
+
+                            writeJSON(file: "${TAG_FILE}", json: tagdata, pretty: 4)
+                            sh 'cat ${TAG_FILE}'
+
+                            createTag nexusInstanceId: 'nxrm3', tagAttributesPath: "${TAG_FILE}", tagName: "${BUILD_TAG}"
+
+                            // write the tag name to the build page (Rich Text Publisher plugin)
+                            rtp abortedAsStable: false, failedAsStable: false, parserName: 'HTML', stableText: "Nexus Repository Tag (Stable): ${BUILD_TAG}",  unstableText: "Nexus Repository Tag (Unstable): ${BUILD_TAG}",unstableAsStable: false 
+                        }
+                    }
+
+                    steps {
+                        script {
+                            withCredentials([usernamePassword(credentialsId: 'admin', passwordVariable: 'USERPWD', usernameVariable: 'USERNAME')]) {
+                                sh '''
+                                set +x
+                                curl -u ${USERNAME}:${USERPWD} --upload-file ${PLUGIN_PATH} ${PLUGIN_REPO}/${PLUGIN_NAME}/${PLUGIN_VERSION}/${PLUGIN_FILE}
+                                '''
+                            }
+                        }
+                    }
+                }
+                }
+            }
         }
 
         stage('Create tag'){
             steps {
-                script {
-                        
-                    //construct the meta data (Pipeline Utility Steps plugin)
-                    def tagdata = readJSON text: '{}' 
-                    tagdata.buildUser = "${USER}" as String
-                    tagdata.buildJob = "${JOB_NAME}-${BUILD_NUMBER}" as String
-                    tagdata.buildTag = "${BUILD_TAG}" as String
-                    tagdata.buildUrl = "${BUILD_URL}" as String
-                    tagdata.iqScanUrl = "${IQ_SCAN_URL}" as String
-
-                    writeJSON(file: "${TAG_FILE}", json: tagdata, pretty: 4)
-                    sh 'cat ${TAG_FILE}'
-
-                    createTag nexusInstanceId: 'nxrm3', tagAttributesPath: "${TAG_FILE}", tagName: "${BUILD_TAG}"
-
-                    // write the tag name to the build page (Rich Text Publisher plugin)
-                    rtp abortedAsStable: false, failedAsStable: false, parserName: 'HTML', stableText: "Nexus Repository Tag (Stable): ${BUILD_TAG}",  unstableText: "Nexus Repository Tag (Unstable): ${BUILD_TAG}",unstableAsStable: false 
-                }
+                
             }
         }
 
         stage('Upload to Nexus Repository'){
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'admin', passwordVariable: 'USERPWD', usernameVariable: 'USERNAME')]) {
-                        sh '''
-                        set +x
-                        curl -u ${USERNAME}:${USERPWD} --upload-file ${PLUGIN_PATH} ${PLUGIN_REPO}/${PLUGIN_NAME}/${PLUGIN_VERSION}/${PLUGIN_FILE}
-                        '''
-                    }
-                }
-            }
+            
         }
     }
 }
