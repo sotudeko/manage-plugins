@@ -41,7 +41,7 @@ pipeline {
             }
             post {
                 success {
-                    // steps {
+                    steps {
                     //     script {
                             
                             //construct the meta data (Pipeline Utility Steps plugin)
@@ -71,7 +71,7 @@ pipeline {
                                 '''
                         //     }
                         // }
-                    }
+                    // }
                 }
             }
         }
