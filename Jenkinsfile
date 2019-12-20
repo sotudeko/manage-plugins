@@ -8,7 +8,7 @@ pipeline {
         PLUGIN_FILE = "${PLUGIN_NAME}.hpi"
         PLUGIN_PATH = "${WORKSPACE}/${PLUGIN_FILE}"
         PLUGIN_INDEX = "https://updates.jenkins-ci.org/download/plugins"
-        PLUGIN_REPO = 'http://localhost:8081/repository/jenkins_plugins'
+        PLUGIN_REPO = 'http://localhost:8081/repository/jenkins-plugins'
     }
 
     stages {
