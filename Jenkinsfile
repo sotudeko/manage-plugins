@@ -36,6 +36,7 @@ pipeline {
                     catch (error) {
                         def policyEvaluation = error.policyEvaluation
                         echo "Nexus IQ scan vulnerabilities detected"
+                        IQ_SCAN_URL = 'none'
                     }
                 }
             }
